@@ -1922,7 +1922,7 @@ class DrawModelForward : noncopyable {
     ds_desc.StencilEnable = FALSE;
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = {};
-    pso_desc.InputLayout = {vertex_layout.data(), vertex_layout.size()};
+    pso_desc.InputLayout = {vertex_layout.data(), static_cast<UINT>(vertex_layout.size())};
     pso_desc.pRootSignature = root_signature_;
     pso_desc.VS = vs_bytecode;
     pso_desc.PS = ps_bytecode;
@@ -2086,7 +2086,7 @@ class DrawDebugGeometry : noncopyable {
     ds_desc.StencilEnable = FALSE;
 
     D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = {};
-    pso_desc.InputLayout = {vertex_layout.data(), vertex_layout.size()};
+    pso_desc.InputLayout = {vertex_layout.data(), static_cast<UINT>(vertex_layout.size())};
     pso_desc.pRootSignature = root_signature_;
     pso_desc.VS = vs_bytecode;
     pso_desc.PS = ps_bytecode;
@@ -2680,6 +2680,13 @@ int main(int, char**) {
 #endif
     }
   } report_on_exit;
+
+  // Set CWD to the folder of the executable, allowing the
+  // visual assets to be properly located.
+  CHAR exe_path[MAX_PATH];
+  GetModuleFileName(NULL, exe_path, MAX_PATH);
+  PathRemoveFileSpec(exe_path);
+  SetCurrentDirectory(exe_path);
 
   glfwSetErrorCallback(glfw_error_callback);
   if(!glfwInit()) {
